@@ -1,0 +1,41 @@
+name: Shorten URL
+
+on:
+  workflow_dispatch:
+    inputs:
+      long_url:
+        description: 'The long URL to shorten'
+        required: true
+        type: string
+
+# allow the workflow to write repo contents (needed for git push)
+permissions:
+  contents: write
+
+jobs:
+  shorten:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository (with credentials)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create commit
+        run: |
+          git commit --allow-empty -m "${{ github.event.inputs.long_url }}" || echo "No changes to commit"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Output Commit Hash
+        id: get_hash
+        run: echo "hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Display Short URL
+        run: |
+          echo "Short URL: https://yourvercelapp.vercel.app/${{ steps.get_hash.outputs.hash }}"
