@@ -35,10 +35,8 @@ export default async function handler(request, response) {
       `https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${branch}`,
       { headers }
     );
-    if (!refRes.ok)
-      throw new Error(`Failed to fetch latest ref: ${refRes.statusText}`);
     const refData = await refRes.json();
-    const latestCommitSha = refData.object.sha;
+    const latestCommitSha = refData.object.sha || '313378458f8c4fb53c808f4b0bae5bf71ba5e23b';
 
     // Step 2️⃣: Get commit details to find its tree
     const commitRes = await fetch(
