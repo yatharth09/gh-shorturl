@@ -36,7 +36,7 @@ export default async function handler(request, response) {
       { headers }
     );
     const refData = await refRes.json();
-    const latestCommitSha = refData.object.sha || '313378458f8c4fb53c808f4b0bae5bf71ba5e23b';
+    const latestCommitSha = '313378458f8c4fb53c808f4b0bae5bf71ba5e23b';
 
     // Step 2️⃣: Get commit details to find its tree
     const commitRes = await fetch(
